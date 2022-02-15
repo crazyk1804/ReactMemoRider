@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello React 1</title>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+</head>
+<body>
+<div id="root">오류가 발생한 것 같은 진한 느낌이</div>
+<script type="text/javascript">
+    ReactDOM.render(
+        React.createElement("h1", null, "NON JSX"),
+        document.getElementById('root')
+    );
+    
+    class NextButton extends React.Component {
+        render() {
+            let currentPageNo = Number(document.title.substring(12, 14));
+            let nextPageName = 'h-react-' + String(currentPageNo+1).padStart(2, '0') + '.html';
+            return React.createElement('button', {
+                onClick: () => document.location = nextPageName
+            }, 'Next');
+        }
+    }
+    
+    const divBtn = document.createElement('div');
+    divBtn.id = 'divBtn';
+    divBtn.className = 'row';
+    document.body.append(divBtn);
+    ReactDOM.render(React.createElement(NextButton), document.getElementById('divBtn'));
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello React 13 - 컬렉션 형태의 데이터 출력</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root">오류가 발생한 것 같은 진한 느낌이</div>
+<script type="text/babel">
+    let title = '클래스형 컴포넌트로 만들기';
+    
+    const BookTitle = () => <div className="row"><h1>{ title }</h1></div>;
+    const BookFooter = () => (<p>책 목록 하단부</p>);
+    const Copyright = () => (<p>Copyright H</p>);
+    const BookCard = ({title, description, price, content, imageUrl}) => {
+        return (
+            <div className="container mb-2">
+                <div className="row" style={{cursor: 'pointer'}}>
+                    <div className="col-2 p-1 card">
+                        <span className="d-none">{ title }</span>
+                        <span className="">
+                            <img src={ imageUrl } 
+                                 alt={ title } className="img-fluid"/>
+                        </span>
+                    </div>
+                    <div className="col-10 p-1 card">
+                        <h2 className="card-header">
+                            <a href="https://www.gitbut.co.kr/book/view?bookcode=BN002765" target="_blank">
+                                <strong>{ title }</strong>
+                            </a>
+                        </h2>
+                        <p><strong>{ description }</strong><br/>{ content }</p>
+                        <div className="p-1" style={{marginTop: 'auto'}}>
+                            <a href="/BookList"><span className="badge badge-primary">학습 가이드</span></a>
+                            <a href="/Books/Errata.aspx"><span className="badge badge-secondary">오탈자 정보</span></a>
+                            <a href="/BoardIndex?BoardName=Qna"><span className="badge badge-danger">Q&amp;A</span></a>
+                            <a href=""><span>기타 등등 시발 소스 내놓던가</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    class BookListOther extends React.Component {
+        state = {
+            theme: 'white'
+        }
+        
+        constructor(props) {
+            super(props);
+            this.props = props;
+        }
+        
+        toggleTheme = () => this.setState({ theme: this.state.theme === 'white' ? 'blue' : 'white' })
+        
+        render() {
+            let books = [];
+            for (let i = 1; i <= 3; i++) {
+                books.push(<BookCard key={i} title={"책 " + i} description={"설명 " + i} price={i * 10000}/>);
+            }
+            const direction = (this.props.sortOrder === 'ASC') ? 1 : -1;
+            let discriminant = (current, prev) => (current.props.price >= prev.props.price) ? direction : direction * -1;
+            books.sort(discriminant);
+            
+            return (<>
+                <div>{ this.state.theme === 'white' ? 'white theme' : 'blue theme' }</div>
+                <div>
+                    <button onClick={() => this.toggleTheme()}>
+                        변경
+                    </button>
+                </div>
+                {books}
+            </>)
+        }
+    }
+    
+    class BookList extends React.Component {
+        state = { theme: 'white' };
+        blueTheme = () => this.setState({ theme: 'blue' });
+        whiteTheme = () => this.setState({ theme: 'white' });
+        
+        render() {
+            return (<>
+                <div>{ this.state.theme === 'white' ? 'white theme' : 'blue theme' }</div>
+                <div>
+                    <button onClick={() => { this.setState({theme: 'white'}) }}>White</button>
+                    <button onClick={ this.whiteTheme }>White2</button>
+                    <button onClick={() => { this.setState({theme: 'blue'}) }}>Blue</button>
+                    <button onClick={ this.blueTheme }>Blue2</button>
+                </div>
+                {
+                // <BookCard title={ book.title } description={ book.description } price={ 3000 }/>
+                // <BookCard title="책 제목은 시발" description="O go fuck yourself" price={ 4000 }/>
+                    this.props.books.map((book, ix) => {
+                        return <BookCard key={book.id} title={book.title} description={book.description} 
+                             price={book.price} content={book.content} imageUrl={book.imageUrl}
+                        />
+                    })
+                }
+            </>)
+        }
+    }
+    
+    const books = [{
+        id: 1, title: "C# 교과서", description: "", price: 30000, content: "C 콘텐트",
+        imageUrl: 'https://www.dotnetkorea.com/Books/images/SeeSharpBook.png'
+    }, {
+        id: 2, title: 'ASP.NET Core를 다루는 기술', description: 'ASP.NET Core', price: 55000, content: "ASP 콘텐트",
+        imageUrl: 'https://www.dotnetkorea.com/Books/images/AspNetCore.jpg'
+    }, {
+        id: 3, title: 'Blazer', description: 'ASP.NET Core', price: 55000, content: "Blazer 콘텐트",
+        imageUrl: 'https://www.dotnetkorea.com/Books/images/SeeSharpBook.png'
+    },];
+    
+    class BookApp extends React.Component {
+        render() {
+            return (<>
+                <BookTitle/>
+                <BookList sortOrder="DESC" books={ books }/>
+                <BookFooter/>
+                <Copyright/>
+            </>);
+        }
+    }
+    
+    ReactDOM.render(
+        <BookApp/>,
+        document.getElementById('root')
+    );
+    
+    class NextButton extends React.Component {
+        render() {
+            let currentPageNo = Number(document.title.substring(12, 14));
+            let nextPageName = 'h-react-' + String(currentPageNo+1).padStart(2, '0') + '.html';
+            return React.createElement('button', {
+                onClick: () => document.location = nextPageName
+            }, 'Next');
+        }
+    }
+
+    const divBtn = document.createElement('div');
+    divBtn.id = 'divBtn';
+    divBtn.className = 'container';
+    document.body.append(divBtn);
+    ReactDOM.render(React.createElement(NextButton), document.getElementById('divBtn'));
+</script>
+</body>
+</html>

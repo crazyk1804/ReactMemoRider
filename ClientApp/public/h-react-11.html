@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello React 11 - 클래스형 컴포넌트</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root">오류가 발생한 것 같은 진한 느낌이</div>
+<script type="text/babel">
+    let title = '클래스형 컴포넌트로 만들기';
+    
+    const BookTitle = () => <div className="row"><h1>{ title }</h1></div>;
+    const BookFooter = () => (<p>책 목록 하단부</p>);
+    const Copyright = () => (<p>Copyright H</p>);
+    const BookCard = ({title, description, price}) => {
+        return (
+            <div className="container mb-2">
+                <div className="row">
+                    <div className="col-12">
+                        { title }
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-2">
+                        { price + ' 원' }
+                    </div>
+                    <div className="col-10">
+                        { description }
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    const BookList = (props) => {
+        let books = [];
+        for(let i=1 ; i<=3 ; i++) {
+            books.push(<BookCard key={i} title={"책 " + i} description={"설명 " + i} price={i * 10000}/>);
+        }
+        const direction = (props.sortOrder === 'ASC') ? 1 : -1;
+        let discriminant = (current, prev) => (current.props.price >= prev.props.price) ? direction : direction * -1;
+        books.sort(discriminant);
+        return (<>{ books }</>)
+    }
+    
+    class BookApp extends React.Component {
+        render() {
+            return (<>
+                <BookTitle/>
+                <BookList sortOrder="DESC"/>
+                <BookFooter/>
+                <Copyright/>
+            </>);
+        }
+    }
+    
+    ReactDOM.render(
+        <BookApp/>,
+        document.getElementById('root')
+    );
+    
+    class NextButton extends React.Component {
+        render() {
+            let currentPageNo = Number(document.title.substring(12, 14));
+            let nextPageName = 'h-react-' + String(currentPageNo+1).padStart(2, '0') + '.html';
+            return React.createElement('button', {
+                onClick: () => document.location = nextPageName
+            }, 'Next');
+        }
+    }
+
+    const divBtn = document.createElement('div');
+    divBtn.id = 'divBtn';
+    divBtn.className = 'container';
+    document.body.append(divBtn);
+    ReactDOM.render(React.createElement(NextButton), document.getElementById('divBtn'));
+</script>
+</body>
+</html>

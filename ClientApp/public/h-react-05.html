@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello React 05 - NON JSX nested element</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root">오류가 발생한 것 같은 진한 느낌이</div>
+<script type="text/babel">
+    var headerStyle = { style: { color: 'blue' }};
+    ReactDOM.render(
+        <div className='container mb-2'>
+            <div className='row'>
+                <div className='col-2'>
+                    제목
+                </div>
+                <div className='col-10'>
+                    설명
+                </div>
+            </div>
+        </div>,
+        document.getElementById('root')
+    );
+
+    class NextButton extends React.Component {
+        render() {
+            let currentPageNo = Number(document.title.substring(12, 14));
+            let nextPageName = 'h-react-' + String(currentPageNo+1).padStart(2, '0') + '.html';
+            return React.createElement('button', {
+                onClick: () => document.location = nextPageName
+            }, 'Next');
+        }
+    }
+
+    const divBtn = document.createElement('div');
+    divBtn.id = 'divBtn';
+    divBtn.className = 'container';
+    document.body.append(divBtn);
+    ReactDOM.render(React.createElement(NextButton), document.getElementById('divBtn'));
+</script>
+</body>
+</html>
